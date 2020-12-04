@@ -1,10 +1,12 @@
 requirements: scipy, numpy, matplotlib, shapely
 
+Let's document by example:
+
 # What is the smallest 1 x 2 rectangle that perfectly folds around the surface of a tetrahedron?
 
-`from foldingPolyhedra import Tetrahedron, Polygon, oneNet, display`
-
-`rectangle = Polygon([(0,0), (0,1), (2,1), (2,0)]) # give points in clockwise order`
+```from foldingPolyhedra import Tetrahedron, Polygon, oneNet, display
+rectangle = Polygon([(0,0), (0,1), (2,1), (2,0)]) # give points in clockwise order
+```
 
 The following function call either crashes (only occasionally, and I can't control this -- shapely gives errors sometimes) or outputs a valid folding. It will take several seconds.
 
