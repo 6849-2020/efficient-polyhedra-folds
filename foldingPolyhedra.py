@@ -9,12 +9,9 @@ import random
 from nets import (GeneralNet, Tetrahedron, Octahedron, Cube, Dodecahedron,
                   Icosahedron, showPolys)
 
-def save(obj, filename):
-    with open("C:/Users/linyk/Desktop/"+filename+".txt", "w") as f:
-        f.write(repr(obj))
-
-def PolygonRepr(P):
-    return f"Polygon({list(zip(*P.exterior.coords.xy))[:-1]})"
+def display(netPolygons, paperPlacement, polyhedron=None):
+    colorDict = None if polyhedron is None else polyhedron.colorDict
+    showPolys(netPolygons+[(paperPlacement,"")], colorDict)
 
 def oneNet(polyhedron, paper, radius=8):
     # Step 1: move `paper` to be centered at the origin
