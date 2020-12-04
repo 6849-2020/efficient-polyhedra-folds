@@ -12,23 +12,6 @@ from scipy.optimize import minimize
 
 h = 3**0.5/2
 
-def go(P):
-    vertices = ioun((h/(2**0.5), h/(2**0.5), tau/8))
-    S = baseSquare(h*(2**0.5))
-    return _bestEpsilon(S, vertices, P)
-
-def Solve(stage, cubelets, ptsof):
-    """Returns a new list of unsolved cubelets. """
-    result = []
-    for params, boxRadius in cubelets:
-        if not aimEpsilon(stage, ptsof(params), boxRadius):
-            # unsolved cubelet
-            for subcubeletID in product((0,1), repeat=len(params)):
-                subcubelet = [x + [-boxRadius/2, boxRadius/2][b]
-                              for x,b in zip(params, subcubeletID)]
-                result.append((subcubelet, boxRadius/2))
-    return result
-
 def baseSquare(sideLength):
     return Polygon([(0,0), (0,sideLength),
                     (sideLength,sideLength), (sideLength,0)])
@@ -61,10 +44,8 @@ def _bestEpsilon(stage, pts, permutation, target):
     # TODO: ensure x+y <= 1 as well (maybe by just mapping (x,y) to (1-x,1-y))
     # return result
 
-questionableSquare = baseSquare(1.3)
-
-def ioun(xytheta):
-    """ Returns locations of vertices A,B,C,D locked in the ioun configuration
+def Diamond(xytheta):
+    """ Returns locations of vertices A,B,C,D locked in the diamond configuration
     (two edge-adjacent triangles) """
     def rotateThenTranslate(pt, theta, dx, dy):
         x,y = pt
@@ -72,9 +53,6 @@ def ioun(xytheta):
     dx, dy, theta = xytheta
     return [rotateThenTranslate(pt, theta, dx, dy)
             for pt in [(0,0.5), (0,-0.5), (h,0), (-h,0)]]
-    
-
-vertices = ioun((h/(2**0.5), h/(2**0.5), tau/8))
 
 def realizable(stage, points, distanceLowerBounds,
                resolution = 100):
@@ -103,8 +81,10 @@ def badDistance(stage, points, distanceLowerBounds,
     return minEpsilon
 
 def tetrahedronDistances(tetPt):
-    """ tetPt is nonnegative (x,y) where x+y<=1.
-    Affinely maps to point on [one-third of tetrahedron base]. """
+    """ tetPt is nonnegative (x,y) where x+y<=1, which we interpret
+    as a point in a certain triangle occupying one-sixth of the area
+    of one face of the tetrahedron.
+    Returns distances along the surface to the four vertices. """
     vertices = np.array(((0.5, h), (0.75, h/2), (0.5, h/3)))
     xyz = np.array([tetPt[0], tetPt[1], 1-tetPt[0]-tetPt[1]])
     pt = np.sum(vertices * xyz.T[:,None], axis=0)
@@ -113,7 +93,7 @@ def tetrahedronDistances(tetPt):
     return distances
 
 def circle(center, radius, resolution):
-    """ resolution is an int """
+    """ actually makes a polygon that's strictly inside the circle """
     return Point(center).buffer(radius, resolution=resolution)
 
 def randomTetPt():
