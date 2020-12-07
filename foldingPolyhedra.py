@@ -13,7 +13,7 @@ def display(netPolygons, paperPlacement, polyhedron=None):
     colorDict = None if polyhedron is None else polyhedron.colorDict
     showPolys(netPolygons+[(paperPlacement,"")], colorDict)
 
-def oneNet(polyhedron, paper, radius=8):
+def oneTry(polyhedron, paper, radius=8):
     # Step 1: move `paper` to be centered at the origin
     paper = PutPolygon(paper, (-paper.centroid.x, -paper.centroid.y), (1,0))
     def fuzz(r): return random.random()*2*r-r
