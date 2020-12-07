@@ -27,16 +27,12 @@ def oneTry(polyhedron, paper, radius=8):
     o,x = min(testPapers,
               key=lambda s:ScaleFactor(paper,s[0],s[1],polygons,
                                        precision=1e-2))
-    #showPolys(polygons+[(PutPolygon(paper,o,x),"")], Tetrahedron.colorDict)##
-    #global Y; Y = o,x,polygons
     x = ScaleToLength(x,ScaleFactor(paper,o,x,polygons,precision=1e-2))
-    #showPolys(polygons+[(PutPolygon(paper,o,x),"")], Tetrahedron.colorDict)##
     # Now plug it into scipy for gradient descent
     o,x = TryMinimizingPolygon(paper, o, x, polygons)
-    #showPolys(polygons+[(PutPolygon(paper,o,x),"")], Tetrahedron.colorDict)##
+    # Check the true final score, and scale appropriately
     score = ScaleFactor(paper, o, x, polygons)
     x = ScaleToLength(x, score)
-    #showPolys(polygons+[(PutPolygon(paper,o,x),"")], Tetrahedron.colorDict)##
     return (polygons, PutPolygon(paper,o,x), score)
 
 def TryMinimizingPolygon(paper, origin, xaxis, polys):
